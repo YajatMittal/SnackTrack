@@ -1,16 +1,42 @@
-# import the inference-sdk
-from inference_sdk import InferenceHTTPClient
-import os
-from dotenv import load_dotenv
+import cv2
+from detectors import MouthDetector, SnackDetector, overlaps
+from drawing import draw_mouth, draw_snack, draw_eating
+ 
+mouth_detector = MouthDetector()
+snack_detector = SnackDetector()
+eating_frames = 0
 
-load_dotenv()
+cap = cv2.VideoCapture(0)
+eating_frames = 0
 
-# initialize the client
-CLIENT = InferenceHTTPClient(
-    api_url="https://serverless.roboflow.com",
-    api_key=os.getenv("ROBOFLOW_API_KEY")
-)
+while True:
+    success, frame = cap.read()
 
-# infer on a local image
-result = CLIENT.infer("cookie.jpg", model_id="snack-detection-ypprq/2")
-print(result)
+    if not success:
+        break
+    
+    mouth = mouth_detector.detect(frame)
+    snack = snack_detector.detect(frame)
+    
+    if mouth:
+        draw_mouth(frame, mouth)
+ 
+    if snack:
+        draw_snack(frame, snack)
+ 
+    if mouth and snack:
+        if overlaps(snack["box"], mouth["box"]):
+            eating_frames += 1
+        else:
+            eating_frames = 0
+ 
+        if eating_frames > 5:
+            draw_eating(frame)
+        
+    cv2.imshow("SnackTrack", frame)
+ 
+    if cv2.waitKey(1) & 0xFF == ord("q"):
+        break
+ 
+cap.release()
+cv2.destroyAllWindows()
