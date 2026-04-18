@@ -1,2 +1,4 @@
 inference-sdk
 python-dotenv
+opencv-python
+mediapipe
