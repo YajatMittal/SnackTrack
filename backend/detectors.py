@@ -5,21 +5,9 @@ import mediapipe as mp
 from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
 from inference_sdk import InferenceHTTPClient
+from config import MOUTH_LANDMARKS, APPLE_PTS, COOKIE_PTS, MOUTH_BOX_HEIGHT_SCALE, MOUTH_BOX_WIDTH_SCALE
 
 load_dotenv()
-
-MOUTH_LANDMARKS = [
-    61, 185, 40, 39, 37, 0, 267, 269, 270, 409,
-    291, 375, 321, 405, 314, 17, 84, 181, 91, 146,
-    61,78, 191, 80, 81, 82, 13, 312, 311, 310, 415,
-    308, 324, 318, 402, 317, 14, 87, 178, 88, 95,
-    78
-]
-
-def overlaps(a, b):
-    ax1, ay1, ax2, ay2 = a
-    bx1, by1, bx2, by2 = b
-    return not (ax2 < bx1 or ax1 > bx2 or ay2 < by1 or ay1 > by2)
 
 class MouthDetector:
     def __init__(self, model_path="face_landmarker.task"):
@@ -56,8 +44,8 @@ class MouthDetector:
         face_h = abs(face[152].y - face[10].y) * h
         
         # determining bounding box width and height for mouth based on face height
-        box_w = int(0.32 * face_h)
-        box_h = int(0.15 * face_h)
+        box_w = int(MOUTH_BOX_WIDTH_SCALE * face_h)
+        box_h = int(MOUTH_BOX_HEIGHT_SCALE * face_h)
 
         # determining mouth center
         mouth_x = (px_upper + px_lower) // 2
@@ -99,3 +87,26 @@ class SnackDetector:
             "label": prediction["class"],
             "box": (x1, y1, x2, y2),
         }
+
+class SnackTrack:
+    def __init__(self):
+        # self.eating_frames = 0
+        self.cookie_bites = 0
+        self.apple_bites = 0
+        self.points = 0
+        # self.streak = 0
+
+    def overlaps(self, a, b):
+        ax1, ay1, ax2, ay2 = a
+        bx1, by1, bx2, by2 = b
+        return not (ax2 < bx1 or ax1 > bx2 or ay2 < by1 or ay1 > by2)
+    
+    def snack_counter(self, snack_type):
+        if snack_type.lower() == "apple":
+            self.apple_bites += 1
+            self.points += APPLE_PTS
+        else:
+            self.cookie_bites += 1
+            self.points += COOKIE_PTS
+        
+    

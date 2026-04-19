@@ -1,3 +1,5 @@
 inference-sdk
 python-dotenv
 mediapipe
+opencv-python
+flask
