@@ -1,7 +1,9 @@
 import cv2
 from detectors import MouthDetector, SnackDetector, SnackTrack
 from drawing import draw_mouth, draw_snack, draw_text
- 
+# from datetime import datetime
+from config import EATING_FRAME_THRESHOLD
+
 mouth_detector = MouthDetector()
 snack_detector = SnackDetector()
 snack_tracker = SnackTrack()
@@ -9,15 +11,19 @@ snack_tracker = SnackTrack()
 cap = cv2.VideoCapture(0)
 eating_frames = 0
 
+# cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+# cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+
 while True:
     success, frame = cap.read()
 
     if not success:
         break
     
-    draw_text(frame, f"Cookie Bites: {snack_tracker.cookie_bites}", 50, 50)
-    draw_text(frame, f"Apple Bites: {snack_tracker.apple_bites}", 50, 150)
-    draw_text(frame, f"Points: {snack_tracker.points}", 50, 250)
+    draw_text(frame, f"Cookie Bites: {snack_tracker.cookie_bites}", (50, 50))
+    draw_text(frame, f"Apple Bites: {snack_tracker.apple_bites}", (50, 100))
+    draw_text(frame, f"Points: {snack_tracker.points}", (50, 150))
+    draw_text(frame, f"Healthy Streak: {snack_tracker.heatlhy_streak}", (50, 200))
 
     mouth = mouth_detector.detect(frame)
     snack = snack_detector.detect(frame)
@@ -35,9 +41,8 @@ while True:
         else:
             eating_frames = 0
  
-        if eating_frames == 5:
+        if eating_frames == EATING_FRAME_THRESHOLD:
             snack_tracker.snack_counter(snack["label"])
-    
         
     cv2.imshow("SnackTrack", frame)
  

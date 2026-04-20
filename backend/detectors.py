@@ -71,7 +71,13 @@ class SnackDetector:
     
     def detect(self, frame):
         predictions = self._client.infer(frame, model_id=self._model_id)["predictions"]
+        # frame_h, frame_w, _ = frame.shape
+        # resized_frame = cv2.resize(frame, (320, 320))
+        # predictions = self._client.infer(resized_frame, model_id=self._model_id)["predictions"]
         
+        # scale_x = frame_w / 320
+        # scale_y = frame_h / 320
+
         if not predictions:
             return None
         
@@ -82,6 +88,11 @@ class SnackDetector:
         y1 = int(y_cen - h / 2)
         x2 = int(x_cen + w / 2)
         y2 = int(y_cen + h / 2)
+
+        # x1 = int((x_cen - w/2)*scale_x)
+        # y1 = int((y_cen - h/2)*scale_y)
+        # x2 = int((x_cen + w/2)*scale_x)
+        # y2 = int((y_cen + h/2)*scale_y)
   
         return {
             "label": prediction["class"],
@@ -94,7 +105,7 @@ class SnackTrack:
         self.cookie_bites = 0
         self.apple_bites = 0
         self.points = 0
-        # self.streak = 0
+        self.heatlhy_streak = 0
 
     def overlaps(self, a, b):
         ax1, ay1, ax2, ay2 = a
@@ -105,8 +116,11 @@ class SnackTrack:
         if snack_type.lower() == "apple":
             self.apple_bites += 1
             self.points += APPLE_PTS
+            self.heatlhy_streak += 1
+
         else:
             self.cookie_bites += 1
             self.points += COOKIE_PTS
+            self.heatlhy_streak = 0
         
     
