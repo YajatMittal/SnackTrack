@@ -70,23 +70,18 @@ class SnackDetector:
         self.model_id = model_id      
     
     def detect(self, frame):
-        frame_h, frame_w, _ = frame.shape
-        resized_frame = cv2.resize(frame, (640, 640))
-        predictions = self.client.infer(resized_frame, model_id=self.model_id)["predictions"]
+        predictions = self.client.infer(frame, model_id=self.model_id)["predictions"]
         
         if not predictions:
             return None
-        
-        scale_x = frame_w / 640
-        scale_y = frame_h / 640
-        
+
         prediction = predictions[0]
         x_cen, y_cen, w, h = int(prediction["x"]), int(prediction["y"]), int(prediction["width"]), int(prediction["height"])
 
-        x1 = int((x_cen - w/2)*scale_x)
-        y1 = int((y_cen - h/2)*scale_y)
-        x2 = int((x_cen + w/2)*scale_x)
-        y2 = int((y_cen + h/2)*scale_y)
+        x1 = int(x_cen - w/2)
+        y1 = int(y_cen - h/2)
+        x2 = int(x_cen + w/2)
+        y2 = int(y_cen + h/2)
   
         return {
             "label": prediction["class"],
