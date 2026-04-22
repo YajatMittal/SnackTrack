@@ -5,13 +5,14 @@ import mediapipe as mp
 from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
 from inference_sdk import InferenceHTTPClient
-from config import MOUTH_LANDMARKS, MOUTH_BOX_HEIGHT_SCALE, MOUTH_BOX_WIDTH_SCALE
+from config import MOUTH_LANDMARKS, MOUTH_BOX_HEIGHT_SCALE, MOUTH_BOX_WIDTH_SCALE, IMG_SIZE
 
 load_dotenv()
 
+
 class MouthDetector:
     def __init__(self, model_path="face_landmarker.task"):
-        base_options = python.BaseOptions(model_asset_path=model_path)
+        base_options = python.BaseOptions(model_asset_path=os.path.join(os.path.dirname(__file__), model_path))
         options = vision.FaceLandmarkerOptions(
             base_options=base_options,
             running_mode=vision.RunningMode.IMAGE,
@@ -70,18 +71,37 @@ class SnackDetector:
         self.model_id = model_id      
     
     def detect(self, frame):
-        predictions = self.client.infer(frame, model_id=self.model_id)["predictions"]
-        
+        frame_h, frame_w, _ = frame.shape
+        resized_frame = cv2.resize(frame, IMG_SIZE)
+        predictions = self.client.infer(resized_frame, model_id=self.model_id)["predictions"]
+
         if not predictions:
             return None
-
+        
+        scale_x = frame_w / IMG_SIZE[0]
+        scale_y = frame_h / IMG_SIZE[1]
+        
         prediction = predictions[0]
         x_cen, y_cen, w, h = int(prediction["x"]), int(prediction["y"]), int(prediction["width"]), int(prediction["height"])
 
-        x1 = int(x_cen - w/2)
-        y1 = int(y_cen - h/2)
-        x2 = int(x_cen + w/2)
-        y2 = int(y_cen + h/2)
+        x1 = int((x_cen - w/2)*scale_x)
+        y1 = int((y_cen - h/2)*scale_y)
+        x2 = int((x_cen + w/2)*scale_x)
+        y2 = int((y_cen + h/2)*scale_y)
+       
+
+        # predictions = self.client.infer(frame, model_id=self.model_id)["predictions"]
+        
+        # if not predictions:
+        #     return None
+
+        # prediction = predictions[0]
+        # x_cen, y_cen, w, h = int(prediction["x"]), int(prediction["y"]), int(prediction["width"]), int(prediction["height"])
+
+        # x1 = int(x_cen - w/2)
+        # y1 = int(y_cen - h/2)
+        # x2 = int(x_cen + w/2)
+        # y2 = int(y_cen + h/2)
   
         return {
             "label": prediction["class"],

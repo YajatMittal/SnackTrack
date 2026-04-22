@@ -14,4 +14,5 @@ COOKIE_PTS   = -10
 
 EATING_FRAME_THRESHOLD = 5
 INFER_EVERY  = 2
-SCORE_FILE = "scores.json"
+SCORE_FILE = "backend/scores.json"
+IMG_SIZE = (640,640)

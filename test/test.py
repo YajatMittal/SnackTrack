@@ -21,10 +21,10 @@ while True:
     if not success:
         break
 
-    draw_text(frame, f"Cookie Bites: {state_manager.state['cookie_bites']}", (50, 50))
-    draw_text(frame, f"Apple Bites: {state_manager.state['apple_bites']}", (50, 100))
-    draw_text(frame, f"Score: {state_manager.state['score']}", (50, 150))
-    draw_text(frame, f"Healthy Streak: {state_manager.state['healthy_streak']}", (50, 200))
+    # draw_text(frame, f"Cookie Bites: {state_manager.state['cookie_bites']}", (50, 50))
+    # draw_text(frame, f"Apple Bites: {state_manager.state['apple_bites']}", (50, 100))
+    # draw_text(frame, f"Score: {state_manager.state['score']}", (50, 150))
+    # draw_text(frame, f"Healthy Streak: {state_manager.state['healthy_streak']}", (50, 200))
 
     mouth = mouth_detector.detect(frame)
     snack = snack_detector.detect(frame)
@@ -44,10 +44,6 @@ while True:
 
         if eating_frames == EATING_FRAME_THRESHOLD:
             snack_tracker.snack_counter(snack["label"])
-        
-            # ans = input("Do you want to reset your score? Y/N: ")
-            # if ans == "y":
-            #     state_manager.reset()
 
     cv2.imshow("SnackTrack", frame)
  
