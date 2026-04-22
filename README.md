@@ -23,7 +23,7 @@ SnackTrack is a fun, real-time snack tracking application that uses computer vis
 
 ### Prerequisites
 
-- Python 3.8+
+- Python >=3.10 and <3.13 (required for the latest inference-sdk versions, e.g., 0.38.0; I personally used Python 3.11 for my venv)
 - Webcam (built-in or external)
 - Roboflow account and API key (for snack detection)
 
