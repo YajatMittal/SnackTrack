@@ -13,15 +13,19 @@ class SnackTrack:
     
     def snack_counter(self, snack_type):
         s = self.sm.state
-        if snack_type.lower() == "apple":
+        snack_type = snack_type.lower()
+
+        if snack_type == "apple":
+            pts = APPLE_PTS
             s["apple_bites"] += 1
-            s["score"] += APPLE_PTS
             s["healthy_streak"] += 1
         else:
+            pts = COOKIE_PTS
             s["cookie_bites"] += 1
-            s["score"] += COOKIE_PTS
             s["healthy_streak"] = 0
             
+        s["score"] += pts
+        self.sm.log_snack(snack_type, pts)
         self.sm.save_state()
         
 class StateManager:
@@ -59,4 +63,12 @@ class StateManager:
         except (FileNotFoundError, json.JSONDecodeError):
             # file doesn't exist or is broken → create fresh one
             self.save_state()
+
+    def log_snack(self, item, pts):
+        self.state["log"].append({
+            "time": datetime.now().strftime("%H:%M:%S"),
+            "item": item,
+            "pts": pts
+        })
+        print(self.state["log"])
 
