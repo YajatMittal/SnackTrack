@@ -1,4 +1,4 @@
-# SnackTrack
+# SnackTrack 🍎
 
 SnackTrack is a fun, real-time snack tracking application that uses computer vision to monitor your eating habits. It detects faces and mouths using MediaPipe, identifies snacks (apples or cookies) via a custom Roboflow model, and scores points based on your choices—rewarding healthy eating while playfully penalizing junk food. The app features a sleek web interface with live video feed, scoring dashboard, streaks, and activity logs.
 
