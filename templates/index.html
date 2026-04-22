@@ -1,153 +1,158 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SnackTrack</title>
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@400;500&family=Instrument+Sans:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@400;500&family=Instrument+Sans:ital,wght@0,400;0,600;1,400&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="static/style.css">
 </head>
+
 <body>
     <canvas id="particles"></canvas>
     <div id="toasts"></div>
 
     <div class="app">
-    <!-- HEADER -->
-    <header>
-        <div class="logo">
-        <div class="logo-icon">🥗</div>
-        <div class="logo-text">Snack<span>Track</span></div>
-        </div>
-        <div class="header-status">
-        <div class="status-pill">
-            <div class="status-dot" id="live-dot"></div>
-            <span id="live-label">CONNECTING</span>
-        </div>
-        <div class="status-pill">
-            <div class="status-dot" id="eat-dot"></div>
-            <span id="eat-label">IDLE</span>
-        </div>
-        <span id="clock">--:--:--</span>
-        <button class="btn-reset" onclick="resetData()">↺ RESET DAY</button>
-        </div>
-    </header>
+        <!-- HEADER -->
+        <header>
+            <div class="logo">
+                <div class="logo-icon">🥗</div>
+                <div class="logo-text">Snack<span>Track</span></div>
+            </div>
+            <div class="header-status">
+                <div class="status-pill">
+                    <div class="status-dot" id="live-dot"></div>
+                    <span id="live-label">CONNECTING</span>
+                </div>
+                <div class="status-pill">
+                    <div class="status-dot" id="eat-dot"></div>
+                    <span id="eat-label">IDLE</span>
+                </div>
+                <span id="clock">--:--:--</span>
+                <button class="btn-reset" onclick="resetData()">↺ RESET DAY</button>
+            </div>
+        </header>
 
-    <!-- LEFT PANEL -->
-    <div class="panel left-panel">
-        <div class="panel-label">Today's Performance</div>
+        <!-- LEFT PANEL -->
+        <div class="panel left-panel">
+            <div class="panel-label">Today's Performance</div>
 
-        <div class="score-block">
-        <div class="score-ring">
-            <svg viewBox="0 0 120 120">
-            <circle class="ring-bg" cx="60" cy="60" r="54"/>
-            <circle class="ring-fill" id="ring-fill" cx="60" cy="60" r="54"/>
-            </svg>
-            <div class="score-center">
-            <div class="score-number" id="score-num">0</div>
-            <div class="score-pts">POINTS</div>
+            <div class="score-block">
+                <div class="score-ring">
+                    <svg viewBox="0 0 120 120">
+                        <circle class="ring-bg" cx="60" cy="60" r="54" />
+                        <circle class="ring-fill" id="ring-fill" cx="60" cy="60" r="54" />
+                    </svg>
+                    <div class="score-center">
+                        <div class="score-number" id="score-num">0</div>
+                        <div class="score-pts">POINTS</div>
+                    </div>
+                </div>
+                <div class="rank-badge rank-NEUTRAL" id="rank-badge">😐 NEUTRAL</div>
+            </div>
+
+            <div class="stat-row">
+                <div class="stat-left">
+                    <div class="stat-icon apple">🍎</div>
+                    <div>
+                        <div class="stat-name">Apple Bites</div>
+                    </div>
+                </div>
+                <div class="stat-val apple" id="apple-count">0</div>
+            </div>
+
+            <div class="stat-row">
+                <div class="stat-left">
+                    <div class="stat-icon cookie">🍪</div>
+                    <div>
+                        <div class="stat-name">Cookie Bites</div>
+                    </div>
+                </div>
+                <div class="stat-val cookie" id="cookie-count">0</div>
+            </div>
+
+            <div class="prog-wrap">
+                <div class="prog-row">
+                    <span class="prog-title">Daily Goal (100 pts)</span>
+                    <span class="prog-val" id="goal-val">0%</span>
+                </div>
+                <div class="prog-track">
+                    <div class="prog-fill" id="goal-bar" style="width:0%;background:var(--gold)"></div>
+                </div>
+            </div>
+
+            <div class="prog-wrap">
+                <div class="prog-row">
+                    <span class="prog-title">Health Index</span>
+                    <span class="prog-val" id="health-val">50%</span>
+                </div>
+                <div class="prog-track">
+                    <div class="prog-fill" id="health-bar" style="width:50%;background:var(--apple)"></div>
+                </div>
+            </div>
+
+            <div class="streak-block">
+                <span class="streak-label">🔥 Healthy streak</span>
+                <span class="streak-val" id="streak-val" style="color:var(--apple)">0</span>
             </div>
         </div>
-        <div class="rank-badge rank-NEUTRAL" id="rank-badge">😐 NEUTRAL</div>
-        </div>
 
-        <div class="stat-row">
-        <div class="stat-left">
-            <div class="stat-icon apple">🍎</div>
-            <div>
-            <div class="stat-name">Apples eaten</div>
+        <!-- CAMERA -->
+        <div class="cam-area" id="cam-wrap">
+            <img id="cam-feed" src="/video" alt="camera feed">
+            <div class="eat-flash" id="eat-flash"></div>
+            <div class="cam-corner tl"></div>
+            <div class="cam-corner tr"></div>
+            <div class="cam-corner bl"></div>
+            <div class="cam-corner br"></div>
+            <div class="cam-statusbar">
+                <span id="cam-detect-label" class="cam-detect-label">Waiting for detection…</span>
+                <span id="cam-date" class=""></span>
             </div>
         </div>
-        <div class="stat-val apple" id="apple-count">0</div>
-        </div>
 
-        <div class="stat-row">
-        <div class="stat-left">
-            <div class="stat-icon cookie">🍪</div>
-            <div>
-            <div class="stat-name">Cookies eaten</div>
+        <!-- RIGHT PANEL -->
+        <div class="panel right-panel">
+            <div class="panel-label">Activity Log</div>
+            <div class="feed-list" id="feed-list">
+                <div style="color:var(--muted);font-size:0.78rem;text-align:center;padding:20px 0">
+                    No snacks detected yet.<br>Show the camera an apple or cookie!
+                </div>
+            </div>
+
+            <div class="panel-label" style="margin-top:8px">How It Works</div>
+            <div class="tips-grid">
+                <div class="tip">
+                    <span class="tip-dot" style="color:var(--teal)">●</span>
+                    Face detection tracks your mouth zone in real-time
+                </div>
+                <div class="tip">
+                    <span class="tip-dot" style="color:var(--apple)">●</span>
+                    Apple bite near mouth = healthy choice — <b style="color:var(--apple)">+15 pts</b>
+                </div>
+                <div class="tip">
+                    <span class="tip-dot" style="color:var(--cookie)">●</span>
+                    Cookie bite near mouth = junk alert — <b style="color:var(--cookie)">−10 pts</b>
+                </div>
+                <div class="tip">
+                    <span class="tip-dot" style="color:var(--gold)">●</span>
+                    Score 100 pts to hit your daily goal 🏆
+                </div>
             </div>
         </div>
-        <div class="stat-val cookie" id="cookie-count">0</div>
-        </div>
 
-        <div class="prog-wrap">
-        <div class="prog-row">
-            <span class="prog-title">Daily Goal (100 pts)</span>
-            <span class="prog-val" id="goal-val">0%</span>
-        </div>
-        <div class="prog-track">
-            <div class="prog-fill" id="goal-bar" style="width:0%;background:var(--gold)"></div>
-        </div>
-        </div>
-
-        <div class="prog-wrap">
-        <div class="prog-row">
-            <span class="prog-title">Health Index</span>
-            <span class="prog-val" id="health-val">50%</span>
-        </div>
-        <div class="prog-track">
-            <div class="prog-fill" id="health-bar" style="width:50%;background:var(--apple)"></div>
-        </div>
-        </div>
-
-        <div class="streak-block">
-        <span class="streak-label">🔥 Healthy streak</span>
-        <span class="streak-val" id="streak-val" style="color:var(--apple)">0</span>
-        </div>
-    </div>
-
-    <!-- CAMERA -->
-    <div class="cam-area" id="cam-wrap">
-        <img id="cam-feed" src="/video" alt="camera feed">
-        <div class="eat-flash" id="eat-flash"></div>
-        <div class="cam-corner tl"></div>
-        <div class="cam-corner tr"></div>
-        <div class="cam-corner bl"></div>
-        <div class="cam-corner br"></div>
-        <div class="cam-statusbar">
-        <span id="cam-detect-label" class="cam-detect-label">Waiting for detection…</span>
-        <span id="cam-date" class=""></span>
-        </div>
-    </div>
-
-    <!-- RIGHT PANEL -->
-    <div class="panel right-panel">
-        <div class="panel-label">Activity Log</div>
-        <div class="feed-list" id="feed-list">
-        <div style="color:var(--muted);font-size:0.78rem;text-align:center;padding:20px 0">
-            No snacks detected yet.<br>Show the camera an apple or cookie!
-        </div>
-        </div>
-
-        <div class="panel-label" style="margin-top:8px">How It Works</div>
-        <div class="tips-grid">
-        <div class="tip">
-            <span class="tip-dot" style="color:var(--teal)">●</span>
-            Face detection tracks your mouth zone in real-time
-        </div>
-        <div class="tip">
-            <span class="tip-dot" style="color:var(--apple)">●</span>
-            Snack near mouth = eating confirmed — <b style="color:var(--apple)">+15 pts</b> for apple
-        </div>
-        <div class="tip">
-            <span class="tip-dot" style="color:var(--cookie)">●</span>
-            Cookie near mouth = junk alert — <b style="color:var(--cookie)">−10 pts</b>
-        </div>
-        <div class="tip">
-            <span class="tip-dot" style="color:var(--gold)">●</span>
-            Score 100 pts to hit your daily goal 🏆
-        </div>
-        </div>
-    </div>
-
-    <footer>
-        <span>SnackTrack</span>
-        <span>·</span>
-        <span>Powered by Roboflow + OpenCV</span>
-        <span>·</span>
-        <span id="foot-date"></span>
-    </footer>
+        <footer>
+            <span>SnackTrack</span>
+            <span>·</span>
+            <span>Powered by Roboflow + OpenCV</span>
+            <span>·</span>
+            <span id="foot-date"></span>
+        </footer>
     </div>
     <script src="static/script.js"></script>
 </body>
+
 </html>

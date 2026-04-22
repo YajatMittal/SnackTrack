@@ -25,5 +25,3 @@ def draw_snack(frame, prediction: dict) -> None:
     cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
     cv2.putText(frame, prediction["label"], (x1, y1), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (36, 255, 12), 2)
 
-def draw_text(frame, text, position: tuple[int, int]) -> None:
-    cv2.putText(frame, text, position, cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 3)

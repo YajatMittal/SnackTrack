@@ -1,32 +1,32 @@
 // ── RANKS ─────────────────────────────────────────────────────────────────────
 const RANKS = [
-  [200,  "🏆 LEGEND",    "LEGEND"],
-  [100,  "💎 ELITE",     "ELITE"],
-  [50,   "🌟 PRO",       "PRO"],
-  [20,   "🍎 HEALTHY",   "HEALTHY"],
-  [0,    "😐 NEUTRAL",   "NEUTRAL"],
-  [-50,  "🍪 SNACKER",   "SNACKER"],
+  [200, "🏆 LEGEND", "LEGEND"],
+  [100, "💎 ELITE", "ELITE"],
+  [50, "🌟 PRO", "PRO"],
+  [20, "🍎 HEALTHY", "HEALTHY"],
+  [0, "😐 NEUTRAL", "NEUTRAL"],
+  [-50, "🍪 SNACKER", "SNACKER"],
   [-999, "💀 JUNK LORD", "JUNK"],
 ];
 
 function getRank(score) {
   for (const [threshold, name, cls] of RANKS)
     if (score >= threshold) return [name, cls];
-  return RANKS[RANKS.length-1].slice(1);
+  return RANKS[RANKS.length - 1].slice(1);
 }
 
 // ── STATE ─────────────────────────────────────────────────────────────────────
-let state = { score:0, apples:0, cookies:0, streak:0, log:[] };
+let state = { score: 0, apples: 0, cookies: 0, streak: 0, log: [] };
 
 // ── CLOCK ─────────────────────────────────────────────────────────────────────
 function tickClock() {
   const now = new Date();
   document.getElementById('clock').textContent =
-    now.toLocaleTimeString('en-CA', {hour12:false});
-  const ds = now.toLocaleDateString('en-CA', {weekday:'long', month:'long', day:'numeric'});
+    now.toLocaleTimeString('en-CA', { hour12: false });
+  const ds = now.toLocaleDateString('en-CA', { weekday: 'long', month: 'long', day: 'numeric' });
   document.getElementById('cam-date').textContent = ds;
   document.getElementById('foot-date').textContent =
-    now.toLocaleDateString('en-CA', {year:'numeric', month:'long', day:'numeric'});
+    now.toLocaleDateString('en-CA', { year: 'numeric', month: 'long', day: 'numeric' });
 }
 setInterval(tickClock, 1000); tickClock();
 
@@ -53,13 +53,13 @@ function updateUI(s) {
   badge.className = `rank-badge rank-${rankCls}`;
 
   // Counts
-  document.getElementById('apple-count').textContent  = s.apples;
+  document.getElementById('apple-count').textContent = s.apples;
   document.getElementById('cookie-count').textContent = s.cookies;
 
   // Goal bar
   const goalPct = Math.max(0, Math.min(1, score / 100));
   document.getElementById('goal-bar').style.width = (goalPct * 100) + '%';
-  document.getElementById('goal-val').textContent  = Math.round(goalPct * 100) + '%';
+  document.getElementById('goal-val').textContent = Math.round(goalPct * 100) + '%';
   document.getElementById('goal-bar').style.background =
     goalPct >= 1 ? 'var(--apple)' : 'var(--gold)';
 
@@ -102,7 +102,7 @@ function updateUI(s) {
   // Cam detect label
   const cdl = document.getElementById('cam-detect-label');
   if (eating) {
-    cdl.textContent = isApple ? '🍎 Apple — eating confirmed!' : '🍪 Cookie — junk detected!';
+    cdl.textContent = isApple ? '🍎 Apple bite confirmed!' : '🍪 Cookie bite detected!';
     cdl.style.color = isApple ? 'var(--apple)' : 'var(--cookie)';
   } else if (s.snack_detected) {
     cdl.textContent = `👁 ${s.snack_detected} in frame — bring closer to mouth`;
@@ -157,7 +157,7 @@ function showToast(item, pts) {
     <span class="toast-icon">${isA ? '🍎' : '🍪'}</span>
     <div class="toast-text">
       <div style="font-weight:600">${msg}</div>
-      <div style="font-size:0.72rem;color:var(--muted);margin-top:2px">${item} detected & eaten</div>
+      <div style="font-size:0.72rem;color:var(--muted);margin-top:2px">${item} bite detected</div>
     </div>
     <span class="toast-pts ${isA ? 'apple' : 'cookie'}">${pts > 0 ? '+' : ''}${pts}</span>
   `;
@@ -170,19 +170,19 @@ function showToast(item, pts) {
 }
 
 // ── PARTICLES ─────────────────────────────────────────────────────────────────
-const canvas  = document.getElementById('particles');
-const ctx2d   = canvas.getContext('2d');
+const canvas = document.getElementById('particles');
+const ctx2d = canvas.getContext('2d');
 let particles = [];
 
 function resize() {
-  canvas.width  = window.innerWidth;
+  canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 }
 window.addEventListener('resize', resize); resize();
 
 class Particle {
   constructor(x, y, color) {
-    this.x  = x; this.y = y;
+    this.x = x; this.y = y;
     this.vx = (Math.random() - 0.5) * 8;
     this.vy = Math.random() * -10 - 2;
     this.life = 1; this.decay = Math.random() * 0.025 + 0.015;
@@ -196,7 +196,7 @@ class Particle {
     ctx.fillStyle = this.color;
     if (this.shape === 'circle') {
       ctx.beginPath();
-      ctx.arc(this.x, this.y, this.r, 0, Math.PI*2);
+      ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
       ctx.fill();
     } else {
       ctx.font = `${this.r * 3}px sans-serif`;
@@ -208,15 +208,15 @@ class Particle {
 
 function spawnParticles(isApple) {
   const colors = isApple
-    ? ['#3dda6e','#34d5d5','#7ef5a0','#f5c842']
-    : ['#f0622a','#ff9a3c','#ffd166','#e03030'];
+    ? ['#3dda6e', '#34d5d5', '#7ef5a0', '#f5c842']
+    : ['#f0622a', '#ff9a3c', '#ffd166', '#e03030'];
   const cx = window.innerWidth * 0.5;
   const cy = window.innerHeight * 0.4;
   for (let i = 0; i < 40; i++) {
     particles.push(new Particle(
-      cx + (Math.random()-0.5)*200,
-      cy + (Math.random()-0.5)*100,
-      colors[Math.floor(Math.random()*colors.length)]
+      cx + (Math.random() - 0.5) * 200,
+      cy + (Math.random() - 0.5) * 100,
+      colors[Math.floor(Math.random() * colors.length)]
     ));
   }
 }
@@ -244,7 +244,7 @@ connectSSE();
 
 // ── POLL STATE ────────────────────────────────────────────────────────────────
 function fetchState() {
-  fetch('/state').then(r => r.json()).then(updateUI).catch(() => {});
+  fetch('/state').then(r => r.json()).then(updateUI).catch(() => { });
 }
 setInterval(fetchState, 800);
 fetchState();
@@ -252,7 +252,7 @@ fetchState();
 // ── RESET ─────────────────────────────────────────────────────────────────────
 function resetData() {
   if (!confirm('Reset today\'s score and log?')) return;
-  fetch('/reset', {method:'POST'}).then(() => fetchState());
+  fetch('/reset', { method: 'POST' }).then(() => fetchState());
   document.getElementById('feed-list').innerHTML =
     '<div style="color:var(--muted);font-size:0.78rem;text-align:center;padding:20px 0">No snacks yet!</div>';
 }

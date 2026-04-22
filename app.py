@@ -7,7 +7,7 @@ import cv2
 
 from backend.tracker import SnackTrack, StateManager
 from backend.detectors import MouthDetector, SnackDetector
-from backend.drawing import draw_mouth, draw_snack, draw_text
+from backend.drawing import draw_mouth, draw_snack
 from config import EATING_FRAME_THRESHOLD, SCORE_FILE
 
 app = Flask(__name__)
