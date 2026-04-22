@@ -45,6 +45,10 @@ while True:
         if eating_frames == EATING_FRAME_THRESHOLD:
             snack_tracker.snack_counter(snack["label"])
         
+            # ans = input("Do you want to reset your score? Y/N: ")
+            # if ans == "y":
+            #     state_manager.reset()
+
     cv2.imshow("SnackTrack", frame)
  
     if cv2.waitKey(1) & 0xFF == ord("q"):

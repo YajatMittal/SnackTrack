@@ -70,5 +70,14 @@ class StateManager:
             "item": item,
             "pts": pts
         })
-        print(self.state["log"])
 
+    def reset(self):
+        self.state = {
+            "score": 0,
+            "apple_bites": 0,
+            "cookie_bites": 0,
+            "healthy_streak": 0,
+            "log": [],
+            "date": datetime.now().strftime("%Y-%m-%d"),
+        }
+        self.save_state()
